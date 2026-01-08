@@ -1,0 +1,14 @@
+ Error: Worker service failed to start on port 37777. (port 37777)
+
+    To restart the worker:
+    1. Exit Claude Code completely
+    2. Run: claude-mem restart
+    3. Restart Claude Code
+        at J (file:///C:/Users/foron/.claude/plugins/cache/thedotmack/claude-mem/7.4.5/scripts/summary-hook.js:28:2005)
+        at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        at async bt
+    (file:///C:/Users/foron/.claude/plugins/cache/thedotmack/claude-mem/7.4.5/scripts/summary-hook.js:32:450)
+        at async Socket.<anonymous>
+    (file:///C:/Users/foron/.claude/plugins/cache/thedotmack/claude-mem/7.4.5/scripts/summary-hook.js:32:1703)
+
+    Node.js v24.5.0

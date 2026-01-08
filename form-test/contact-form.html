@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>お問い合わせフォーム - テスト用</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 1.8rem;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 0.95rem;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    label .required {
+      color: #f44336;
+      margin-left: 4px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      font-family: inherit;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .hint {
+      font-size: 0.85rem;
+      color: #888;
+      margin-top: 6px;
+    }
+
+    .error {
+      color: #f44336;
+      font-size: 0.85rem;
+      margin-top: 6px;
+      display: none;
+    }
+
+    .error.show {
+      display: block;
+    }
+
+    input.error,
+    textarea.error,
+    select.error {
+      border-color: #f44336;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      accent-color: #667eea;
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 20px;
+    }
+
+    .radio-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: #667eea;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    /* 結果表示 */
+    .result {
+      display: none;
+      margin-top: 30px;
+      padding: 25px;
+      background: #f0fdf4;
+      border: 2px solid #22c55e;
+      border-radius: 10px;
+    }
+
+    .result.success {
+      display: block;
+    }
+
+    .result h2 {
+      color: #16a34a;
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+    }
+
+    .result-item {
+      display: flex;
+      padding: 10px 0;
+      border-bottom: 1px solid #dcfce7;
+    }
+
+    .result-item:last-child {
+      border-bottom: none;
+    }
+
+    .result-label {
+      font-weight: 600;
+      color: #333;
+      width: 120px;
+      flex-shrink: 0;
+    }
+
+    .result-value {
+      color: #555;
+      flex: 1;
+    }
+
+    .character-count {
+      text-align: right;
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    .character-count.warning {
+      color: #ff9800;
+    }
+
+    .character-count.error {
+      color: #f44336;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📧 お問い合わせフォーム</h1>
+    <p class="subtitle">Chrome DevTools MCP フォーム自動入力テスト用</p>
+
+    <form id="contactForm">
+      <!-- お名前 -->
+      <div class="form-group">
+        <label for="name">お名前<span class="required">※</span></label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          maxlength="50"
+          placeholder="山田 太郎"
+          required
+        >
+        <div class="character-count"><span id="nameCount">0</span>/50</div>
+        <div class="error" id="nameError">お名前を入力してください</div>
+      </div>
+
+      <!-- メールアドレス -->
+      <div class="form-group">
+        <label for="email">メールアドレス<span class="required">※</span></label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="example@email.com"
+          required
+        >
+        <div class="error" id="emailError">正しいメールアドレスを入力してください</div>
+      </div>
+
+      <!-- 電話番号 -->
+      <div class="form-group">
+        <label for="tel">電話番号</label>
+        <input
+          type="tel"
+          id="tel"
+          name="tel"
+          placeholder="090-1234-5678"
+          pattern="[0-9\-]+"
+        >
+        <div class="hint">半角数字とハイフンのみ</div>
+        <div class="error" id="telError">正しい電話番号を入力してください</div>
+      </div>
+
+      <!-- お問い合わせ種類 -->
+      <div class="form-group">
+        <label for="type">お問い合わせ種類<span class="required">※</span></label>
+        <select id="type" name="type" required>
+          <option value="">選択してください</option>
+          <option value="product">製品について</option>
+          <option value="support">技術サポート</option>
+          <option value="sales">営業に関するお問い合わせ</option>
+          <option value="other">その他</option>
+        </select>
+        <div class="error" id="typeError">お問い合わせ種類を選択してください</div>
+      </div>
+
+      <!-- 返信希望 -->
+      <div class="form-group">
+        <label>返信を希望しますか？<span class="required">※</span></label>
+        <div class="radio-group">
+          <label class="radio-item">
+            <input type="radio" name="reply" value="yes" checked>
+            <span>はい</span>
+          </label>
+          <label class="radio-item">
+            <input type="radio" name="reply" value="no">
+            <span>いいえ</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- 個人情報保護 -->
+      <div class="form-group">
+        <div class="checkbox-group">
+          <input type="checkbox" id="privacy" name="privacy" required>
+          <label for="privacy" style="margin: 0;">
+            プライバシーポリシーに同意する<span class="required">※</span>
+          </label>
+        </div>
+        <div class="error" id="privacyError">同意が必要です</div>
+      </div>
+
+      <!-- お問い合わせ内容 -->
+      <div class="form-group">
+        <label for="message">お問い合わせ内容<span class="required">※</span></label>
+        <textarea
+          id="message"
+          name="message"
+          maxlength="500"
+          placeholder="お問い合わせ内容をご記入ください"
+          required
+        ></textarea>
+        <div class="character-count"><span id="messageCount">0</span>/500</div>
+        <div class="error" id="messageError">お問い合わせ内容を入力してください</div>
+      </div>
+
+      <button type="submit" class="submit-btn">送信する</button>
+    </form>
+
+    <!-- 送信結果 -->
+    <div class="result" id="result">
+      <h2>✅ 送信完了！</h2>
+      <div id="resultContent"></div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('contactForm');
+    const nameInput = document.getElementById('name');
+    const messageInput = document.getElementById('message');
+    const nameCount = document.getElementById('nameCount');
+    const messageCount = document.getElementById('messageCount');
+
+    // 文字カウント
+    nameInput.addEventListener('input', () => {
+      const count = nameInput.value.length;
+      nameCount.textContent = count;
+      if (count > 45) nameCount.classList.add('warning');
+      else nameCount.classList.remove('warning');
+    });
+
+    messageInput.addEventListener('input', () => {
+      const count = messageInput.value.length;
+      messageCount.textContent = count;
+      if (count > 450) messageCount.classList.add('warning');
+      else messageCount.classList.remove('warning');
+    });
+
+    // フォーム送信
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      // バリデーション
+      let isValid = true;
+
+      // 名前チェック
+      if (!nameInput.value.trim()) {
+        document.getElementById('nameError').classList.add('show');
+        nameInput.classList.add('error');
+        isValid = false;
+      } else {
+        document.getElementById('nameError').classList.remove('show');
+        nameInput.classList.remove('error');
+      }
+
+      // メールチェック
+      const emailInput = document.getElementById('email');
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(emailInput.value)) {
+        document.getElementById('emailError').classList.add('show');
+        emailInput.classList.add('error');
+        isValid = false;
+      } else {
+        document.getElementById('emailError').classList.remove('show');
+        emailInput.classList.remove('error');
+      }
+
+      // 種類チェック
+      const typeInput = document.getElementById('type');
+      if (!typeInput.value) {
+        document.getElementById('typeError').classList.add('show');
+        typeInput.classList.add('error');
+        isValid = false;
+      } else {
+        document.getElementById('typeError').classList.remove('show');
+        typeInput.classList.remove('error');
+      }
+
+      // プライバシーチェック
+      const privacyInput = document.getElementById('privacy');
+      if (!privacyInput.checked) {
+        document.getElementById('privacyError').classList.add('show');
+        isValid = false;
+      } else {
+        document.getElementById('privacyError').classList.remove('show');
+      }
+
+      // メッセージチェック
+      if (!messageInput.value.trim()) {
+        document.getElementById('messageError').classList.add('show');
+        messageInput.classList.add('error');
+        isValid = false;
+      } else {
+        document.getElementById('messageError').classList.remove('show');
+        messageInput.classList.remove('error');
+      }
+
+      if (!isValid) return;
+
+      // 結果表示
+      const formData = {
+        name: nameInput.value,
+        email: emailInput.value,
+        tel: document.getElementById('tel').value || '未入力',
+        type: typeInput.options[typeInput.selectedIndex].text,
+        reply: document.querySelector('input[name="reply"]:checked').value === 'yes' ? 'はい' : 'いいえ',
+        message: messageInput.value
+      };
+
+      const resultHtml = `
+        <div class="result-item"><span class="result-label">お名前:</span><span class="result-value">${escapeHtml(formData.name)}</span></div>
+        <div class="result-item"><span class="result-label">メール:</span><span class="result-value">${escapeHtml(formData.email)}</span></div>
+        <div class="result-item"><span class="result-label">電話番号:</span><span class="result-value">${escapeHtml(formData.tel)}</span></div>
+        <div class="result-item"><span class="result-label">種類:</span><span class="result-value">${escapeHtml(formData.type)}</span></div>
+        <div class="result-item"><span class="result-label">返信希望:</span><span class="result-value">${escapeHtml(formData.reply)}</span></div>
+        <div class="result-item"><span class="result-label">内容:</span><span class="result-value">${escapeHtml(formData.message)}</span></div>
+      `;
+
+      document.getElementById('resultContent').innerHTML = resultHtml;
+      document.getElementById('result').classList.add('success');
+
+      // フォームを非表示
+      form.style.display = 'none';
+    });
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>
